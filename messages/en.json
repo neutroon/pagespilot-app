@@ -1,158 +1,5 @@
 {
   "HomePage": {
-    "title": "Welcome to PagesPilot",
-    
-    "navigation": {
-      "features": "Features",
-      "howItWorks": "How It Works",
-      "joinBeta": "Join Beta"
-    },
-    "hero": {
-      "badge": "AI-Powered Content Automation",
-      "headline": "Your Content",
-      "headlineHighlight": "Autopilot",
-      "description": "Take control of your digital content journey. PagesPilot generates, schedules, and optimizes your posts automatically—like having an AI co-pilot for your brand.",
-      "ctaPrimary": "Start Your Flight Plan",
-      "ctaSecondary": "Watch Demo",
-      "stats": {
-        "contentCreation": "Faster Content Creation",
-        "automation": "Automated Engagement",
-        "timeSaved": "Time Saved"
-      }
-    },
-    "howItWorks": {
-      "title": "Your AI Co-Pilot in Action",
-      "description": "Like a skilled pilot navigating through complex airspace, PagesPilot guides your content through the digital landscape with precision and intelligence.",
-      "steps": {
-        "planning": {
-          "title": "Flight Plan Creation",
-          "description": "AI analyzes your brand voice, audience, and goals to create a comprehensive content strategy and posting schedule."
-        },
-        "execution": {
-          "title": "Autopilot Execution",
-          "description": "Content is automatically generated, posted, and optimized across your channels while you focus on growing your business."
-        },
-        "control": {
-          "title": "Mission Control",
-          "description": "Monitor performance, adjust strategies, and receive intelligent insights to continuously improve your content's impact."
-        }
-      }
-    },
-    "features": {
-      "title": "Full Control Tower Features",
-      "description": "Every tool you need to master your content strategy, all in one intelligent platform.",
-      "contentGeneration": {
-        "badge": "AI Content Generation",
-        "title": "Intelligent Content Creation",
-        "description": "Our AI understands your brand voice and creates engaging, on-brand content that resonates with your audience. From captions to full articles, PagesPilot crafts content that converts.",
-        "benefits": [
-          "Brand voice consistency across all content",
-          "Multi-format content (posts, stories, articles)",
-          "SEO-optimized content suggestions"
-        ]
-      },
-      "automation": {
-        "badge": "Smart Automation",
-        "title": "24/7 Engagement Autopilot",
-        "description": "Never miss a conversation again. Our AI responds to comments, messages, and mentions with contextually appropriate responses that maintain your brand voice and build relationships.",
-        "benefits": [
-          "Instant response to comments and DMs",
-          "Context-aware conversation handling",
-          "Smart escalation for complex queries"
-        ]
-      }
-    },
-    "testimonials": {
-      "title": "Trusted by Content Leaders",
-      "description": "Join thousands of businesses already flying on autopilot with PagesPilot",
-      "customers": [
-        {
-          "quote": "PagesPilot transformed our content strategy. We're now posting 10x more consistently and our engagement has tripled. It's like having a content team on autopilot.",
-          "name": "Sarah Mitchell",
-          "title": "Marketing Director, TechFlow"
-        },
-        {
-          "quote": "As a small business owner, I don't have time to manage social media 24/7. PagesPilot handles everything while I focus on growing my business. Game changer!",
-          "name": "Marcus Rodriguez",
-          "title": "Founder, Local Fitness Studio"
-        },
-        {
-          "quote": "Managing 50+ client accounts was overwhelming until we found PagesPilot. Now we deliver consistent, high-quality content for all our clients effortlessly.",
-          "name": "Lisa Kim",
-          "title": "Agency Owner, Digital Boost"
-        }
-      ],
-      "stats": {
-        "pilots": "Active Pilots",
-        "posts": "Posts Generated",
-        "uptime": "Uptime",
-        "support": "AI Support"
-      }
-    },
-    "waitlist": {
-      "badge": "Early Access Beta Program",
-      "title": "Ready for Takeoff?",
-      "description": "Join the exclusive beta program and be among the first to experience the future of AI-powered content automation. Your feedback will help shape PagesPilot's evolution.",
-      "form": {
-        "nameLabel": "Full Name *",
-        "namePlaceholder": "Enter your full name",
-        "emailLabel": "Email Address *",
-        "emailPlaceholder": "Enter your email address",
-        "urlLabel": "Content Page/Profile URL",
-        "urlPlaceholder": "https://facebook.com/your-page (optional)",
-        "messageLabel": "Tell us about your content goals",
-        "messagePlaceholder": "What are your biggest content challenges? What features excite you most? (optional)",
-        "benefitsTitle": "🚀 Beta Pilot Benefits:",
-        "benefits": [
-          "6 months free access (valued at $297)",
-          "Direct line to our development team",
-          "Lifetime 50% discount on all plans",
-          "Exclusive beta pilot community access"
-        ],
-        "submitButton": "Request Beta Access"
-      },
-      "success": {
-        "title": "Welcome Aboard, Pilot! 🎉",
-        "description": "Your application has been received. We'll review your information and send you beta access details within 48 hours.",
-        "note": "📧 Check your email for next steps and exclusive pilot resources."
-      }
-    },
-    "cta": {
-      "badge": "Limited Beta Spots Available",
-      "title": "Your Content Journey",
-      "titleHighlight": "Starts Here",
-      "description": "Don't let your competitors take the lead. Join the content automation revolution and transform how you engage with your audience.",
-      "button": "Claim Your Pilot Seat",
-      "noCard": "No credit card required",
-      "features": [
-        "⚡ Instant Setup",
-        "🔒 Enterprise Security",
-        "📈 Proven Results"
-      ]
-    },
-    "footer": {
-      "description": "The AI-powered content automation platform that helps businesses and creators take control of their digital presence. From generating compelling content to automating engagement, PagesPilot is your co-pilot for content success.",
-      "product": {
-        "title": "Product",
-        "features": "Features",
-        "howItWorks": "How It Works",
-        "betaAccess": "Beta Access",
-        "pricing": "Pricing"
-      },
-      "company": {
-        "title": "Company",
-        "about": "About",
-        "blog": "Blog",
-        "careers": "Careers",
-        "contact": "Contact"
-      },
-      "legal": {
-        "copyright": "© 2025 PagesPilot. All rights reserved.",
-        "privacy": "Privacy Policy",
-        "terms": "Terms of Service",
-        "cookies": "Cookie Policy"
-      }
-    },
     "icons": {
       "alt": {
         "pagesPilotLogo": "PagesPilot Logo",
@@ -246,6 +93,18 @@
       "haveAccount": "Already have an account?",
       "signIn": "Sign in",
       "signupNav": "Sign Up",
+      "loading": "Loading...",
+      "signupFailed": "Signup failed",
+      "waitlist": {
+        "heading": "PagesPilot is in Early Access",
+        "description": "We're onboarding users gradually. Join the waitlist and we'll notify you when your spot is ready.",
+        "inviteOnly": "Signup is currently invite-only",
+        "ctaDescription": "Click below to fill in the waitlist form and we'll reach out as soon as your spot is ready.",
+        "joinButton": "Join the Waitlist",
+        "haveInvite": "Already have an invite?",
+        "signInHere": "Sign in here",
+        "backToHome": "Back to Home"
+      },
       "validation": {
         "nameRequired": "Full name is required",
         "nameMinLength": "Name must be at least 2 characters",
