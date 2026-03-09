@@ -38,7 +38,7 @@ class FacebookAPIService {
   constructor() {
     this.baseURL =
       process.env.NEXT_PUBLIC_FACEBOOK_API_URL || "https://graph.facebook.com";
-    this.apiVersion = "v19.0";
+    this.apiVersion = "v25.0";
   }
 
   // Get Facebook OAuth URL
@@ -52,7 +52,7 @@ class FacebookAPIService {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!response.ok) {
@@ -66,7 +66,7 @@ class FacebookAPIService {
   // Exchange code for access token
   async exchangeCodeForToken(
     code: string,
-    redirectUri: string
+    redirectUri: string,
   ): Promise<{ access_token: string }> {
     const response = await fetch(FACEBOOK_API.CALLBACK, {
       method: "GET",
@@ -90,7 +90,7 @@ class FacebookAPIService {
       `${this.baseURL}/${this.apiVersion}/me/accounts?access_token=${accessToken}&fields=id,name,access_token,category,followers_count,picture`,
       {
         credentials: "include", // Include cookies for authentication
-      }
+      },
     );
 
     if (!response.ok) {
@@ -104,13 +104,13 @@ class FacebookAPIService {
   // Get page details
   async getPageDetails(
     pageId: string,
-    pageAccessToken: string
+    pageAccessToken: string,
   ): Promise<FacebookPage> {
     const response = await fetch(
       `${this.baseURL}/${this.apiVersion}/${pageId}?access_token=${pageAccessToken}&fields=id,name,category,followers_count,picture`,
       {
         credentials: "include", // Include cookies for authentication
-      }
+      },
     );
 
     if (!response.ok) {
@@ -126,7 +126,7 @@ class FacebookAPIService {
     pageAccessToken: string,
     message: string,
     link?: string,
-    scheduledPublishTime?: number
+    scheduledPublishTime?: number,
   ): Promise<{ id: string }> {
     const postData: any = {
       message,
@@ -151,7 +151,7 @@ class FacebookAPIService {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams(postData),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -166,13 +166,13 @@ class FacebookAPIService {
   async getPagePosts(
     pageId: string,
     pageAccessToken: string,
-    limit: number = 25
+    limit: number = 25,
   ): Promise<FacebookPost[]> {
     const response = await fetch(
       `${this.baseURL}/${this.apiVersion}/${pageId}/posts?access_token=${pageAccessToken}&fields=id,message,created_time,permalink_url,likes.summary(true),comments.summary(true),shares&limit=${limit}`,
       {
         credentials: "include", // Include cookies for authentication
-      }
+      },
     );
 
     if (!response.ok) {
@@ -188,7 +188,7 @@ class FacebookAPIService {
     pageId: string,
     pageAccessToken: string,
     since?: string,
-    until?: string
+    until?: string,
   ): Promise<FacebookAnalytics> {
     const metrics =
       "page_impressions,page_reach,page_engaged_users,page_post_engagements";
@@ -217,13 +217,13 @@ class FacebookAPIService {
   async getPageComments(
     pageId: string,
     pageAccessToken: string,
-    postId: string
+    postId: string,
   ): Promise<any[]> {
     const response = await fetch(
       `${this.baseURL}/${this.apiVersion}/${postId}/comments?access_token=${pageAccessToken}&fields=id,message,from,created_time,like_count`,
       {
         credentials: "include", // Include cookies for authentication
-      }
+      },
     );
 
     if (!response.ok) {
@@ -238,7 +238,7 @@ class FacebookAPIService {
   async replyToComment(
     commentId: string,
     pageAccessToken: string,
-    message: string
+    message: string,
   ): Promise<{ id: string }> {
     const response = await fetch(
       `${this.baseURL}/${this.apiVersion}/${commentId}/comments`,
@@ -252,7 +252,7 @@ class FacebookAPIService {
           message,
           access_token: pageAccessToken,
         }),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -266,13 +266,13 @@ class FacebookAPIService {
   // Get page messages (if page has messaging enabled)
   async getPageMessages(
     pageId: string,
-    pageAccessToken: string
+    pageAccessToken: string,
   ): Promise<any[]> {
     const response = await fetch(
       `${this.baseURL}/${this.apiVersion}/${pageId}/conversations?access_token=${pageAccessToken}&fields=id,updated_time,message_count`,
       {
         credentials: "include", // Include cookies for authentication
-      }
+      },
     );
 
     if (!response.ok) {
@@ -288,7 +288,7 @@ class FacebookAPIService {
     pageId: string,
     pageAccessToken: string,
     recipientId: string,
-    message: string
+    message: string,
   ): Promise<{ id: string }> {
     const response = await fetch(
       `${this.baseURL}/${this.apiVersion}/me/messages`,
@@ -303,7 +303,7 @@ class FacebookAPIService {
           message: { text: message },
           access_token: pageAccessToken,
         }),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -320,7 +320,7 @@ class FacebookAPIService {
     pageAccessToken: string,
     message: string,
     scheduledTime: Date,
-    link?: string
+    link?: string,
   ): Promise<{ id: string }> {
     const scheduledPublishTime = Math.floor(scheduledTime.getTime() / 1000);
     return this.createPost(
@@ -328,20 +328,20 @@ class FacebookAPIService {
       pageAccessToken,
       message,
       link,
-      scheduledPublishTime
+      scheduledPublishTime,
     );
   }
 
   // Get scheduled posts
   async getScheduledPosts(
     pageId: string,
-    pageAccessToken: string
+    pageAccessToken: string,
   ): Promise<FacebookPost[]> {
     const response = await fetch(
       `${this.baseURL}/${this.apiVersion}/${pageId}/scheduled_posts?access_token=${pageAccessToken}&fields=id,message,created_time,scheduled_publish_time`,
       {
         credentials: "include", // Include cookies for authentication
-      }
+      },
     );
 
     if (!response.ok) {
@@ -365,7 +365,7 @@ class FacebookAPIService {
         body: new URLSearchParams({
           access_token: pageAccessToken,
         }),
-      }
+      },
     );
 
     return response.ok;
@@ -378,7 +378,7 @@ class FacebookAPIService {
         `${this.baseURL}/${this.apiVersion}/me?access_token=${accessToken}`,
         {
           credentials: "include", // Include cookies for authentication
-        }
+        },
       );
       return response.ok;
     } catch {
