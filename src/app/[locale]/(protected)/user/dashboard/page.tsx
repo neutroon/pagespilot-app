@@ -95,8 +95,7 @@ export default function Dashboard() {
             dashboardService.getDashboardStats(),
             dashboardService.getDashboardActivity(),
           ]);
-          setConnectedPages(await facebookAPI.getPages(fbAccessToken || ""))
-          console.log(connectedPages);
+          setConnectedPages(await facebookAPI.getPages(fbAccessToken || ""));
           setDashboardStats(stats);
           setDashboardActivity(activities);
         } catch (error) {
@@ -106,7 +105,6 @@ export default function Dashboard() {
         }
       }
     };
-
 
     fetchDashboardData();
   }, [isAuthenticated, isLoading]);
@@ -133,9 +131,9 @@ export default function Dashboard() {
     try {
       const response = await fetch(
         `${FACEBOOK_API.PAGES}?access_token=${encodeURIComponent(
-          accessToken
+          accessToken,
         )}&userId=${user?.id || "1"}`,
-        { credentials: "include" }
+        { credentials: "include" },
       );
 
       if (!response.ok) {
@@ -557,12 +555,13 @@ export default function Dashboard() {
                         className="flex items-start space-x-3"
                       >
                         <div
-                          className={`w-2 h-2 rounded-full mt-2 ${activity.status === "success"
-                            ? "bg-green-500"
-                            : activity.status === "warning"
-                              ? "bg-yellow-500"
-                              : "bg-red-500"
-                            }`}
+                          className={`w-2 h-2 rounded-full mt-2 ${
+                            activity.status === "success"
+                              ? "bg-green-500"
+                              : activity.status === "warning"
+                                ? "bg-yellow-500"
+                                : "bg-red-500"
+                          }`}
                         ></div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-gray-900">
@@ -619,14 +618,16 @@ export default function Dashboard() {
                 // Show actual create post form when connected
                 <div className="text-center py-8">
                   <div
-                    className={`w-16 h-16 ${modalTheme === "purple" ? "bg-purple-100" : "bg-green-100"
-                      } rounded-full flex items-center justify-center mx-auto mb-4`}
+                    className={`w-16 h-16 ${
+                      modalTheme === "purple" ? "bg-purple-100" : "bg-green-100"
+                    } rounded-full flex items-center justify-center mx-auto mb-4`}
                   >
                     <CheckCircle
-                      className={`w-8 h-8 ${modalTheme === "purple"
-                        ? "text-purple-600"
-                        : "text-green-600"
-                        }`}
+                      className={`w-8 h-8 ${
+                        modalTheme === "purple"
+                          ? "text-purple-600"
+                          : "text-green-600"
+                      }`}
                     />
                   </div>
                   <h4 className="text-xl font-semibold text-gray-900 mb-2">
@@ -640,16 +641,17 @@ export default function Dashboard() {
                       setShowCreateForm(false);
                       // Scroll to Mission Control section
                       const missionControl = document.querySelector(
-                        '[data-section="mission-control"]'
+                        '[data-section="mission-control"]',
                       );
                       if (missionControl) {
                         missionControl.scrollIntoView({ behavior: "smooth" });
                       }
                     }}
-                    className={`px-6 py-3 ${modalTheme === "purple"
-                      ? "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
-                      : "bg-blue-600 hover:bg-blue-700"
-                      } text-white rounded-xl font-semibold transition-colors`}
+                    className={`px-6 py-3 ${
+                      modalTheme === "purple"
+                        ? "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    } text-white rounded-xl font-semibold transition-colors`}
                   >
                     {t("dashboard.modals.goToMissionControl")}
                   </button>
@@ -658,14 +660,16 @@ export default function Dashboard() {
                 // Show connection required message when not connected
                 <div className="text-center py-8">
                   <div
-                    className={`w-16 h-16 ${modalTheme === "purple" ? "bg-purple-100" : "bg-blue-100"
-                      } rounded-full flex items-center justify-center mx-auto mb-4`}
+                    className={`w-16 h-16 ${
+                      modalTheme === "purple" ? "bg-purple-100" : "bg-blue-100"
+                    } rounded-full flex items-center justify-center mx-auto mb-4`}
                   >
                     <User
-                      className={`w-8 h-8 ${modalTheme === "purple"
-                        ? "text-purple-600"
-                        : "text-blue-600"
-                        }`}
+                      className={`w-8 h-8 ${
+                        modalTheme === "purple"
+                          ? "text-purple-600"
+                          : "text-blue-600"
+                      }`}
                     />
                   </div>
                   <h4 className="text-xl font-semibold text-gray-900 mb-2">
@@ -686,16 +690,17 @@ export default function Dashboard() {
                         setShowCreateForm(false);
                         // Scroll to Mission Control section
                         const missionControl = document.querySelector(
-                          '[data-section="mission-control"]'
+                          '[data-section="mission-control"]',
                         );
                         if (missionControl) {
                           missionControl.scrollIntoView({ behavior: "smooth" });
                         }
                       }}
-                      className={`px-6 py-3 ${modalTheme === "purple"
-                        ? "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
-                        : "bg-blue-600 hover:bg-blue-700"
-                        } text-white rounded-xl font-semibold transition-colors`}
+                      className={`px-6 py-3 ${
+                        modalTheme === "purple"
+                          ? "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+                          : "bg-blue-600 hover:bg-blue-700"
+                      } text-white rounded-xl font-semibold transition-colors`}
                     >
                       {t("dashboard.modals.connectFacebook")}
                     </button>
