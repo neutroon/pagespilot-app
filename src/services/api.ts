@@ -9,6 +9,25 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   avatar?: string;
+  facebookAccounts: {
+    id: number;
+    userId: number;
+    facebookUserId: string;
+    accessToken: string;
+    tokenType: string;
+    expiresAt: string | null;
+    refreshToken: string | null;
+    scope: string | null;
+    isActive: boolean;
+    lastUsedAt: string;
+    deviceInfo: string;
+    createdAt: string;
+    updatedAt: string;
+    pages: any[];
+    _count: {
+      activities: number;
+    };
+  }[];
 }
 
 export interface AuthResponse {
@@ -188,17 +207,20 @@ class AuthService {
     }
 
     // Refresh token every 14 minutes (before 15-minute expiry)
-    this.refreshInterval = setInterval(async () => {
-      const isAuth = await this.isAuthenticated();
-      if (isAuth) {
-        await this.refreshToken();
-      }
-    }, 14 * 60 * 1000); // 14 minutes
+    this.refreshInterval = setInterval(
+      async () => {
+        const isAuth = await this.isAuthenticated();
+        if (isAuth) {
+          await this.refreshToken();
+        }
+      },
+      14 * 60 * 1000,
+    ); // 14 minutes
   }
 
   // Update user profile
   async updateProfile(
-    data: UpdateProfileRequest
+    data: UpdateProfileRequest,
   ): Promise<UpdateProfileResponse> {
     const response = await fetch(AUTH_API.ME, {
       method: "PUT",
@@ -221,7 +243,7 @@ class AuthService {
   // Change password
   async changePassword(
     currentPassword: string,
-    newPassword: string
+    newPassword: string,
   ): Promise<{ message: string }> {
     const response = await fetch(`${AUTH_API.ME}/password`, {
       method: "PUT",
@@ -273,7 +295,7 @@ const api = {
     name: string,
     email: string,
     url: string,
-    message: string
+    message: string,
   ) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API}/leads`, {
       method: "POST",
