@@ -34,6 +34,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const res = await authService.getCurrentUser();
         setUser(res || null);
+        localStorage.setItem(
+          "facebook_access_token",
+          res?.facebookAccounts[0]?.accessToken || ""
+        );
+        localStorage.setItem("facebook_connected", "true");
+
       } catch {
         setUser(null);
       } finally {
@@ -51,9 +57,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(user);
 
       // Set role cookie as fallback (in case backend doesn't set it)
-      document.cookie = `role=${user.role}; path=/; max-age=${
-        7 * 24 * 60 * 60
-      }; SameSite=Lax`;
+      document.cookie = `role=${user.role}; path=/; max-age=${7 * 24 * 60 * 60
+        }; SameSite=Lax`;
 
       // Extract locale from current pathname
       const locale = pathname.split("/")[1] || "en";
@@ -87,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       await authService.logout();
-    } catch {}
+    } catch { }
     setUser(null);
 
     // Clear role cookie
@@ -106,9 +111,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(user);
 
       // Set role cookie as fallback
-      document.cookie = `role=${user.role}; path=/; max-age=${
-        7 * 24 * 60 * 60
-      }; SameSite=Lax`;
+      document.cookie = `role=${user.role}; path=/; max-age=${7 * 24 * 60 * 60
+        }; SameSite=Lax`;
 
       // Extract locale from current pathname
       const locale = pathname.split("/")[1] || "en";
