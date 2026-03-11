@@ -128,7 +128,7 @@ export default function ProfilePage() {
               </h3>
               <div className="grid grid-cols-1 gap-4">
                 <Link
-                  href="/dashboard"
+                  href="dashboard"
                   className="group flex items-center p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-all duration-200"
                 >
                   <div className="w-12 h-12 bg-green-100 group-hover:bg-green-200 rounded-lg flex items-center justify-center me-4 transition-colors duration-200">
