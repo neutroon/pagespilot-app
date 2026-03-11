@@ -58,9 +58,8 @@ export default function UserMenu() {
           {/* <div className="text-xs text-slate-500">{user.email}</div> */}
         </div>
         <ChevronDown
-          className={`w-4 h-4 text-slate-500 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-4 h-4 text-slate-500 transition-transform ${isOpen ? "rotate-180" : ""
+            }`}
         />
       </button>
 
@@ -75,7 +74,7 @@ export default function UserMenu() {
 
           <div className="py-2">
             <Link
-              href={`${user.role}/profile`}
+              href={`profile`}
               className="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
             >
               <LayoutDashboard className="w-4 h-4 me-3 text-slate-500" />
