@@ -28,24 +28,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  const fetchUser = async () => {
+    try {
+      const res = await authService.getCurrentUser();
+      setUser(res || null);
+      localStorage.setItem(
+        "facebook_access_token",
+        res?.facebookAccounts[0]?.accessToken || ""
+      );
+      localStorage.setItem("facebook_connected", "true");
+
+    } catch {
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   // Initial load
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await authService.getCurrentUser();
-        setUser(res || null);
-        localStorage.setItem(
-          "facebook_access_token",
-          res?.facebookAccounts[0]?.accessToken || ""
-        );
-        localStorage.setItem("facebook_connected", "true");
-
-      } catch {
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchUser();
   }, []);
 
@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const res = await authService.login({ email, password });
       const { user } = res;
       setUser(user);
-
+      await fetchUser();
       // Set role cookie as fallback (in case backend doesn't set it)
       document.cookie = `role=${user.role}; path=/; max-age=${7 * 24 * 60 * 60
         }; SameSite=Lax`;
@@ -92,6 +92,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       await authService.logout();
+      localStorage.removeItem("facebook_access_token");
+      localStorage.removeItem("facebook_connected");
     } catch { }
     setUser(null);
 
