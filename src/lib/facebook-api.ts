@@ -34,11 +34,12 @@ interface FacebookAnalytics {
 class FacebookAPIService {
   private baseURL: string;
   private apiVersion: string;
-
+  private appUrl: string;
   constructor() {
     this.baseURL =
       process.env.NEXT_PUBLIC_FACEBOOK_API_URL || "https://graph.facebook.com";
     this.apiVersion = "v25.0";
+    this.appUrl = process.env.NEXT_PUBLIC_API || "http://localhost:3000";
   }
 
   // Get Facebook OAuth URL
@@ -166,10 +167,10 @@ class FacebookAPIService {
   async getPagePosts(
     pageId: string,
     pageAccessToken: string,
-    limit: number = 25,
+    limit: number = 5,
   ): Promise<FacebookPost[]> {
     const response = await fetch(
-      `${this.baseURL}/${this.apiVersion}/${pageId}/posts?access_token=${pageAccessToken}&fields=id,message,created_time,permalink_url,likes.summary(true),comments.summary(true),shares&limit=${limit}`,
+      `${this.appUrl}/v1/facebook/page-posts/${pageId}?access_token=${pageAccessToken}`,
       {
         credentials: "include", // Include cookies for authentication
       },
