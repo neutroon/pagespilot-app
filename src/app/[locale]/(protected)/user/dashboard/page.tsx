@@ -28,8 +28,9 @@ import {
   BarChart3,
   FileText,
   Sparkles,
+  Loader2,
 } from "lucide-react";
-import { facebookAPI } from "@/lib/facebook-api";
+import { facebookAPI, type FacebookPost } from "@/lib/facebook-api";
 
 type FacebookPage = {
   id: string;
@@ -43,10 +44,28 @@ type FacebookPage = {
     };
   };
 };
-
 export default function Dashboard() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const params = useParams();
+  const [pagePosts, setPagePosts] = useState<FacebookPost[]>([]);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
+  const [selectedPageId, setSelectedPageId] = useState<string | null>(null);
+
+  const fetchPagePosts = useCallback(async (pageId: string, accessToken: string) => {
+    if (!accessToken) return;
+    
+    setIsLoadingPosts(true);
+    setSelectedPageId(pageId);
+    try {
+      const posts = await facebookAPI.getPagePosts(pageId, accessToken);
+      setPagePosts(posts);
+    } catch (error) {
+      console.error("Failed to fetch page posts:", error);
+      setPagePosts([]);
+    } finally {
+      setIsLoadingPosts(false);
+    }
+  }, []);
   const locale = params.locale as string;
   const router = useRouter();
   const t = useTranslations("HomePage");
@@ -150,6 +169,8 @@ export default function Dashboard() {
       return [];
     }
   }, [user]);
+
+
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
@@ -299,7 +320,7 @@ export default function Dashboard() {
                     </p>
                     <p className="text-2xl font-bold text-gray-900">
                       {isLoadingStats ? (
-                        <span className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></span>
+                        <Loader2 strokeWidth={3} className="w-6 h-6 animate-spin text-blue-600" />
                       ) : (
                         dashboardStats.connectedAccounts
                       )}
@@ -319,7 +340,7 @@ export default function Dashboard() {
                     </p>
                     <p className="text-2xl font-bold text-gray-900">
                       {isLoadingStats ? (
-                        <span className="w-6 h-6 border-2 border-gray-300 border-t-green-600 rounded-full animate-spin"></span>
+                        <Loader2 strokeWidth={3} className="w-6 h-6 animate-spin text-green-600" />
                       ) : (
                         dashboardStats.postsScheduled
                       )}
@@ -339,7 +360,7 @@ export default function Dashboard() {
                     </p>
                     <p className="text-2xl font-bold text-gray-900">
                       {isLoadingStats ? (
-                        <span className="w-6 h-6 border-2 border-gray-300 border-t-purple-600 rounded-full animate-spin"></span>
+                        <Loader2 strokeWidth={3} className="w-6 h-6 animate-spin text-purple-600" />
                       ) : (
                         dashboardStats.totalReach.toLocaleString()
                       )}
@@ -408,7 +429,7 @@ export default function Dashboard() {
                 </p>
               </div>
               <div className="p-6">
-                <FacebookConnection locale={locale} />
+                <FacebookConnection locale={locale} onPageSelect={fetchPagePosts} />
                 <div className="mt-6">
                   <FacebookFeatures locale={locale} />
                 </div>
@@ -470,6 +491,118 @@ export default function Dashboard() {
               </div>
             </div>
 
+            {/* facebook page posts */}
+            {selectedPageId && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Recent Page Posts
+                  </h3>
+                </div>
+                <div className="p-6">
+                  {isLoadingPosts ? (
+                    <div className="text-center py-8">
+                      <Loader2 strokeWidth={3} className="w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
+                      <p className="text-gray-500 text-sm">
+                        Loading posts...
+                      </p>
+                    </div>
+                  ) : pagePosts.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">
+                      No posts found or failed to load.
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {pagePosts.map((post) => (
+                        <div key={post.id} className="p-4 bg-gray-50 rounded-xl border border-gray-200 flex flex-col space-y-2 hover:shadow-sm transition-shadow">
+                          <div className="flex justify-between items-start">
+                            <p className="text-sm font-medium text-gray-900 whitespace-pre-wrap leading-relaxed">
+                              {post.message || "[No text content]"}
+                            </p>
+                          </div>
+                          <div className="flex justify-between items-center text-xs text-gray-500 pt-3 border-t border-gray-200 mt-2">
+                            <span>{new Date(post.created_time).toLocaleString(locale, { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                            {post.permalink_url && (
+                              <a href={post.permalink_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 flex items-center font-medium">
+                                View on Facebook
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Recent Activity */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {t("dashboard.recentActivity.title")}
+                </h3>
+              </div>
+              <div className="p-6">
+                {isLoadingStats ? (
+                  <div className="text-center py-8">
+                    <Loader2 strokeWidth={3} className="w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-gray-500 text-sm">
+                      {t("dashboard.loading")}
+                    </p>
+                  </div>
+                ) : dashboardActivity.length === 0 ? (
+                  <div className="text-center py-8">
+                    <svg
+                      className="w-12 h-12 text-gray-400 mx-auto mb-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                      />
+                    </svg>
+                    <p className="text-gray-500 text-sm">
+                      {t("dashboard.recentActivity.noActivity")}
+                    </p>
+                    <p className="text-gray-400 text-xs mt-1">
+                      {t("dashboard.recentActivity.startConnecting")}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {dashboardActivity.slice(0, 5).map((activity) => (
+                      <div
+                        key={activity.id}
+                        className="flex items-start space-x-3"
+                      >
+                        <div
+                          className={`w-2 h-2 rounded-full mt-2 ${activity.status === "success"
+                            ? "bg-green-500"
+                            : activity.status === "warning"
+                              ? "bg-yellow-500"
+                              : "bg-red-500"
+                            }`}
+                        ></div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900">
+                            {activity.title}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {activity.description}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            {new Date(activity.timestamp).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* System Status */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200">
               <div className="px-6 py-4 border-b border-gray-200">
@@ -513,73 +646,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Recent Activity */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {t("dashboard.recentActivity.title")}
-                </h3>
-              </div>
-              <div className="p-6">
-                {isLoadingStats ? (
-                  <div className="text-center py-8">
-                    <span className="w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></span>
-                    <p className="text-gray-500 text-sm">
-                      {t("dashboard.loading")}
-                    </p>
-                  </div>
-                ) : dashboardActivity.length === 0 ? (
-                  <div className="text-center py-8">
-                    <svg
-                      className="w-12 h-12 text-gray-400 mx-auto mb-4"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                      />
-                    </svg>
-                    <p className="text-gray-500 text-sm">
-                      {t("dashboard.recentActivity.noActivity")}
-                    </p>
-                    <p className="text-gray-400 text-xs mt-1">
-                      {t("dashboard.recentActivity.startConnecting")}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {dashboardActivity.slice(0, 5).map((activity) => (
-                      <div
-                        key={activity.id}
-                        className="flex items-start space-x-3"
-                      >
-                        <div
-                          className={`w-2 h-2 rounded-full mt-2 ${
-                            activity.status === "success"
-                              ? "bg-green-500"
-                              : activity.status === "warning"
-                                ? "bg-yellow-500"
-                                : "bg-red-500"
-                          }`}
-                        ></div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900">
-                            {activity.title}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {activity.description}
-                          </p>
-                          <p className="text-xs text-gray-400 mt-1">
-                            {new Date(activity.timestamp).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -618,16 +684,14 @@ export default function Dashboard() {
                 // Show actual create post form when connected
                 <div className="text-center py-8">
                   <div
-                    className={`w-16 h-16 ${
-                      modalTheme === "purple" ? "bg-purple-100" : "bg-green-100"
-                    } rounded-full flex items-center justify-center mx-auto mb-4`}
+                    className={`w-16 h-16 ${modalTheme === "purple" ? "bg-purple-100" : "bg-green-100"
+                      } rounded-full flex items-center justify-center mx-auto mb-4`}
                   >
                     <CheckCircle
-                      className={`w-8 h-8 ${
-                        modalTheme === "purple"
-                          ? "text-purple-600"
-                          : "text-green-600"
-                      }`}
+                      className={`w-8 h-8 ${modalTheme === "purple"
+                        ? "text-purple-600"
+                        : "text-green-600"
+                        }`}
                     />
                   </div>
                   <h4 className="text-xl font-semibold text-gray-900 mb-2">
@@ -647,11 +711,10 @@ export default function Dashboard() {
                         missionControl.scrollIntoView({ behavior: "smooth" });
                       }
                     }}
-                    className={`px-6 py-3 ${
-                      modalTheme === "purple"
-                        ? "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
-                        : "bg-blue-600 hover:bg-blue-700"
-                    } text-white rounded-xl font-semibold transition-colors`}
+                    className={`px-6 py-3 ${modalTheme === "purple"
+                      ? "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+                      : "bg-blue-600 hover:bg-blue-700"
+                      } text-white rounded-xl font-semibold transition-colors`}
                   >
                     {t("dashboard.modals.goToMissionControl")}
                   </button>
@@ -660,16 +723,14 @@ export default function Dashboard() {
                 // Show connection required message when not connected
                 <div className="text-center py-8">
                   <div
-                    className={`w-16 h-16 ${
-                      modalTheme === "purple" ? "bg-purple-100" : "bg-blue-100"
-                    } rounded-full flex items-center justify-center mx-auto mb-4`}
+                    className={`w-16 h-16 ${modalTheme === "purple" ? "bg-purple-100" : "bg-blue-100"
+                      } rounded-full flex items-center justify-center mx-auto mb-4`}
                   >
                     <User
-                      className={`w-8 h-8 ${
-                        modalTheme === "purple"
-                          ? "text-purple-600"
-                          : "text-blue-600"
-                      }`}
+                      className={`w-8 h-8 ${modalTheme === "purple"
+                        ? "text-purple-600"
+                        : "text-blue-600"
+                        }`}
                     />
                   </div>
                   <h4 className="text-xl font-semibold text-gray-900 mb-2">
@@ -696,11 +757,10 @@ export default function Dashboard() {
                           missionControl.scrollIntoView({ behavior: "smooth" });
                         }
                       }}
-                      className={`px-6 py-3 ${
-                        modalTheme === "purple"
-                          ? "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
-                          : "bg-blue-600 hover:bg-blue-700"
-                      } text-white rounded-xl font-semibold transition-colors`}
+                      className={`px-6 py-3 ${modalTheme === "purple"
+                        ? "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
+                        : "bg-blue-600 hover:bg-blue-700"
+                        } text-white rounded-xl font-semibold transition-colors`}
                     >
                       {t("dashboard.modals.connectFacebook")}
                     </button>
