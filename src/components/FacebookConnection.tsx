@@ -22,10 +22,12 @@ interface FacebookPage {
 
 interface FacebookConnectionProps {
   locale: string;
+  onPageSelect?: (pageId: string, accessToken: string) => void;
 }
 
 export default function FacebookConnection({
   locale,
+  onPageSelect,
 }: FacebookConnectionProps) {
   const t = useTranslations("HomePage");
   const { user } = useAuth();
@@ -326,21 +328,15 @@ export default function FacebookConnection({
           <p className="text-slate-600 mb-2">
             {t("dashboard.facebook.selectPage")}
           </p>
-          {/* <button
-            onClick={initiateFacebookConnection}
-            disabled={isConnecting}
-            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 disabled:opacity-50 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none disabled:hover:scale-100"
-          >
-            {t("dashboard.facebook.connectNow")}
-          </button> */}
         </div>
       ) : (
         <div className="space-y-4">
           {Array.isArray(connectedPages) && connectedPages.length > 0 ? (
             connectedPages.map((page) => (
               <div
+                onClick={() => onPageSelect?.(page.id, page.access_token)}
                 key={page.id}
-                className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200"
+                className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors"
               >
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
