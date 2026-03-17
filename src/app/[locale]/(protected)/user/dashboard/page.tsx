@@ -10,12 +10,12 @@ import {
   DashboardStats,
   DashboardActivity,
 } from "@/lib/dashboard-api";
-import FacebookConnection from "@/components/FacebookConnection";
-import FacebookFeatures from "@/components/FacebookFeatures";
-import FacebookPostCreator from "@/components/FacebookPostCreator";
-import GeneratePostForm from "@/components/GeneratePostForm";
-import PostReviewModal from "@/components/PostReviewModal";
-import AppNavbar from "@/components/AppNavbar";
+import FacebookConnection from "@/components/user/FacebookConnection";
+import FacebookFeatures from "@/components/user/FacebookFeatures";
+import FacebookPostCreator from "@/components/user/FacebookPostCreator";
+import GeneratePostForm from "@/components/user/GeneratePostForm";
+import PostReviewModal from "@/components/user/PostReviewModal";
+import AppNavbar from "@/components/shared/AppNavbar";
 import { FACEBOOK_API } from "@/lib/config";
 import {
   Users,
