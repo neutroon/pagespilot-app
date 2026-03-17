@@ -31,8 +31,6 @@ export default function UserMenu() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (!user) return null;
-
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -41,7 +39,7 @@ export default function UserMenu() {
         aria-label={t("login.userMenu")}
       >
         <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
-          {user.avatar ? (
+          {user?.avatar ? (
             <Image
               src={user.avatar}
               alt={user.name}
@@ -54,7 +52,7 @@ export default function UserMenu() {
           )}
         </div>
         <div className="hidden md:block text-left">
-          <div className="text-sm font-medium text-slate-900">{user.name}</div>
+          <div className="text-sm font-medium text-slate-900">{user?.name}</div>
           {/* <div className="text-xs text-slate-500">{user.email}</div> */}
         </div>
         <ChevronDown
@@ -69,7 +67,7 @@ export default function UserMenu() {
             {/* <div className="text-sm font-medium text-slate-900">
               {user.name}
             </div> */}
-            <div className="text-xs text-slate-500">{user.email}</div>
+            <div className="text-xs text-slate-500">{user?.email}</div>
           </div>
 
           <div className="py-2">
