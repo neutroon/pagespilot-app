@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { User } from "../services/api";
-import { useAuth } from "../contexts/AuthContext";
+import { User } from "@/services/api";
+import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
 
 interface UserProfileCardProps {
