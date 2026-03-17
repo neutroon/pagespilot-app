@@ -553,6 +553,11 @@
           "creating": "Creating...",
           "cancel": "Cancel"
         }
+      },
+      "bulkActions": {
+        "selected": "{count} manager(s) selected",
+        "deactivate": "Deactivate",
+        "delete": "Delete"
       }
     },
     "assignments": {
@@ -563,7 +568,8 @@
         "totalAssignments": "Total Assignments",
         "activeAssignments": "Active Assignments",
         "managers": "Managers",
-        "unassignedUsers": "Unassigned Users"
+        "unassignedUsers": "Unassigned Users",
+        "assignedUsers": "Assigned Users"
       },
       "filters": {
         "title": "Filters:",
@@ -579,6 +585,7 @@
         "id": "ID",
         "manager": "Manager",
         "user": "User",
+        "assignedAt": "Assigned At",
         "assignedDate": "Assigned Date",
         "assignedBy": "Assigned By",
         "status": "Status",
@@ -604,27 +611,6 @@
           "assigning": "Assigning...",
           "cancel": "Cancel"
         }
-      }
-    },
-    "managers": {
-      "title": "Managers",
-      "subtitle": "Manage team managers and their assignments",
-      "createManager": "Create Manager",
-      "stats": {
-        "totalManagers": "Total Managers",
-        "activeManagers": "Active Managers",
-        "totalAssignments": "Total Assignments",
-        "avgTeamSize": "Avg. Team Size"
-      },
-      "bulkActions": {
-        "selected": "{count} manager(s) selected",
-        "deactivate": "Deactivate",
-        "delete": "Delete"
-      },
-      "table": {
-        "manager": "Manager",
-        "assignedUsers": "Assigned Users",
-        "assignments": "Assignments"
       }
     },
     "analytics": {
@@ -680,26 +666,6 @@
         "exportAnalyticsDesc": "Download detailed reports",
         "advancedAnalytics": "Advanced Analytics",
         "advancedAnalyticsDesc": "Deep dive into data"
-      }
-    },
-    "assignments": {
-      "title": "User Assignments",
-      "subtitle": "Manage user-manager assignments and team structures",
-      "assignUser": "Assign User",
-      "stats": {
-        "totalAssignments": "Total Assignments",
-        "activeAssignments": "Active Assignments",
-        "managers": "Managers",
-        "assignedUsers": "Assigned Users"
-      },
-      "table": {
-        "manager": "Manager",
-        "user": "User",
-        "assignedAt": "Assigned At",
-        "status": "Status",
-        "viewManager": "View Manager",
-        "viewUser": "View User",
-        "delete": "Delete"
       }
     },
     "facebook": {

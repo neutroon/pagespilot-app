@@ -543,6 +543,11 @@
           "creating": "جاري الإنشاء...",
           "cancel": "إلغاء"
         }
+      },
+      "bulkActions": {
+        "selected": "تم تحديد {count} مدير",
+        "deactivate": "إلغاء التفعيل",
+        "delete": "حذف"
       }
     },
     "assignments": {
@@ -553,7 +558,8 @@
         "totalAssignments": "إجمالي التعيينات",
         "activeAssignments": "التعيينات النشطة",
         "managers": "المديرين",
-        "unassignedUsers": "المستخدمين غير المعينين"
+        "unassignedUsers": "المستخدمين غير المعينين",
+        "assignedUsers": "المستخدمين المعينين"
       },
       "filters": {
         "title": "المرشحات:",
@@ -569,6 +575,7 @@
         "id": "المعرف",
         "manager": "المدير",
         "user": "المستخدم",
+        "assignedAt": "تم التعيين في",
         "assignedDate": "تاريخ التعيين",
         "assignedBy": "تم التعيين بواسطة",
         "status": "الحالة",
@@ -594,27 +601,6 @@
           "assigning": "جاري التعيين...",
           "cancel": "إلغاء"
         }
-      }
-    },
-    "managers": {
-      "title": "المديرين",
-      "subtitle": "إدارة مديري الفرق وتعييناتهم",
-      "createManager": "إنشاء مدير",
-      "stats": {
-        "totalManagers": "إجمالي المديرين",
-        "activeManagers": "المديرين النشطين",
-        "totalAssignments": "إجمالي التعيينات",
-        "avgTeamSize": "متوسط حجم الفريق"
-      },
-      "bulkActions": {
-        "selected": "تم تحديد {count} مدير",
-        "deactivate": "إلغاء التفعيل",
-        "delete": "حذف"
-      },
-      "table": {
-        "manager": "مدير",
-        "assignedUsers": "المستخدمين المعينين",
-        "assignments": "التعيينات"
       }
     },
     "analytics": {
@@ -670,26 +656,6 @@
         "exportAnalyticsDesc": "تحميل التقارير التفصيلية",
         "advancedAnalytics": "التحليلات المتقدمة",
         "advancedAnalyticsDesc": "الغوص العميق في البيانات"
-      }
-    },
-    "assignments": {
-      "title": "تعيينات المستخدمين",
-      "subtitle": "إدارة تعيينات المستخدمين والمديرين وهياكل الفرق",
-      "assignUser": "تعيين مستخدم",
-      "stats": {
-        "totalAssignments": "إجمالي التعيينات",
-        "activeAssignments": "التعيينات النشطة",
-        "managers": "المديرين",
-        "assignedUsers": "المستخدمين المعينين"
-      },
-      "table": {
-        "manager": "مدير",
-        "user": "مستخدم",
-        "assignedAt": "تم التعيين في",
-        "status": "الحالة",
-        "viewManager": "عرض المدير",
-        "viewUser": "عرض المستخدم",
-        "delete": "حذف"
       }
     },
     "facebook": {
