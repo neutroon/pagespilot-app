@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { ArrowLeftIcon, EyeIcon, SlashIcon } from "lucide-react";
-import Logo from "@/components/Logo";
+import Logo from "@/components/shared/Logo";
 import { Link } from "@/i18n/navigation";
 
 export default function LoginPage() {
