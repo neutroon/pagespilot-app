@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/contexts/AuthContext";
 import { adminService, User } from "@/lib/admin-api";
 // import AdminLayout from "@/components/admin/AdminLayout";
-import DataTable from "@/components/admin/DataTable";
+import DataTable from "@/components/shared/DataTable";
 import {
   Plus,
   Edit,
