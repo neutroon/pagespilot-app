@@ -1,7 +1,7 @@
 "use client";
 
-import { useAuth } from "../../../../../contexts/AuthContext";
-import AppNavbar from "../../../../../components/AppNavbar";
+import { useAuth } from "@/contexts/AuthContext";
+import AppNavbar from "@/components/shared/AppNavbar";
 import Link from "next/link";
 import Image from "next/image";
 
