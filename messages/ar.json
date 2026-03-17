@@ -155,24 +155,24 @@
       "readyToLaunch": "جاهز للإطلاق",
       "contentCreation": {
         "title": "إنشاء المحتوى",
-        "subtitle": "إنشاء وجدولة محتوى وسائل التواصل الاجتماعي",
-        "generatePost": "توليد منشور",
-        "generatePostDescription": "إنشاء محتوى مدعوم بالذكاء الاصطناعي",
-        "createPost": "إنشاء منشور",
-        "createPostDescription": "إنشاء محتوى يدوي"
+        "subtitle": "أنشئ وأدر منشوراتك على منصات التواصل الاجتماعي",
+        "generatePost": "توليد بالذكاء الاصطناعي",
+        "generatePostDescription": "أنشئ محتوى احترافي في ثوانٍ",
+        "createPost": "إنشاء من الصفر",
+        "createPostDescription": "اكتب وصمم منشوراتك بنفسك"
       },
       "missionControl": {
         "title": "مركز التحكم",
         "subtitle": "اربط حسابات وسائل التواصل الاجتماعي وابدأ رحلتك"
       },
       "quickActions": {
-        "quickActions": "الإجراءات السريعة",
+        "title": "الإجراءات السريعة",
         "schedulePosts": "جدولة المنشورات",
-        "schedulePostsDescription": "خطط لجدول المحتوى الخاص بك",
+        "schedulePostsDescription": "خطط ونظم تقويم المحتوى الخاص بك",
         "analytics": "التحليلات",
-        "analyticsDescription": "عرض أدائك",
+        "analyticsDescription": "تتبع أداء حساباتك ونموك",
         "templates": "القوالب",
-        "templatesDescription": "استخدم قوالب المحتوى"
+        "templatesDescription": "ابدأ بتصميمات وقوالب جاهزة"
       },
       "systemStatus": {
         "title": "حالة النظام",
@@ -206,26 +206,8 @@
       "navigation": {
         "title": "التنقل",
         "dashboard": "لوحة التحكم",
-        "profile": "الملف الشخصي",
-        "settings": "الإعدادات"
-      },
-      "quickActions": {
-        "title": "الإجراءات السريعة",
-        "quickActions": "الإجراءات السريعة",
-        "schedulePosts": "جدولة المنشورات",
-        "schedulePostsDescription": "خطط وجدول منشوراتك",
-        "analytics": "التحليلات",
-        "analyticsDescription": "تتبع أداءك",
-        "templates": "القوالب",
-        "templatesDescription": "استخدم القوالب الجاهزة"
-      },
-      "contentCreation": {
-        "title": "إنشاء المحتوى",
-        "subtitle": "أنشئ محتوى جذاب بمساعدة الذكاء الاصطناعي",
-        "generatePost": "توليد منشور",
-        "generatePostDescription": "توليد المحتوى بالذكاء الاصطناعي",
-        "createPost": "إنشاء منشور",
-        "createPostDescription": "إنشاء المحتوى يدوياً"
+        "settings": "الإعدادات",
+        "accountsManagement": "إدارة الحسابات"
       },
       "facebook": {
         "connectPage": "ربط صفحة فيسبوك",

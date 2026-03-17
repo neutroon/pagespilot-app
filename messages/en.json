@@ -155,24 +155,24 @@
       "readyToLaunch": "Ready to Launch",
       "contentCreation": {
         "title": "Content Creation",
-        "subtitle": "Create and schedule your social media content",
-        "generatePost": "Generate Post",
-        "generatePostDescription": "AI-powered content creation",
-        "createPost": "Create Post",
-        "createPostDescription": "Manual content creation"
+        "subtitle": "Create and manage your social media posts",
+        "generatePost": "Generate with AI",
+        "generatePostDescription": "Instantly create AI-powered content",
+        "createPost": "Create from Scratch",
+        "createPostDescription": "Write and craft your posts manually"
       },
       "missionControl": {
         "title": "Mission Control",
         "subtitle": "Connect your social media accounts and start your journey"
       },
       "quickActions": {
-        "quickActions": "Quick Actions",
+        "title": "Quick Actions",
         "schedulePosts": "Schedule Posts",
-        "schedulePostsDescription": "Plan your content calendar",
+        "schedulePostsDescription": "Plan and automate your content calendar",
         "analytics": "Analytics",
-        "analyticsDescription": "View your performance",
+        "analyticsDescription": "Track your performance and growth",
         "templates": "Templates",
-        "templatesDescription": "Use content templates"
+        "templatesDescription": "Start with ready-to-use designs"
       },
       "systemStatus": {
         "title": "System Status",
@@ -206,26 +206,8 @@
       "navigation": {
         "title": "Navigation",
         "dashboard": "Dashboard",
-        "profile": "Profile",
-        "settings": "Settings"
-      },
-      "quickActions": {
-        "title": "Quick Actions",
-        "quickActions": "Quick Actions",
-        "schedulePosts": "Schedule Posts",
-        "schedulePostsDescription": "Plan and schedule your posts",
-        "analytics": "Analytics",
-        "analyticsDescription": "Track your performance",
-        "templates": "Templates",
-        "templatesDescription": "Use pre-made templates"
-      },
-      "contentCreation": {
-        "title": "Content Creation",
-        "subtitle": "Create engaging content with AI assistance",
-        "generatePost": "Generate Post",
-        "generatePostDescription": "AI-powered content generation",
-        "createPost": "Create Post",
-        "createPostDescription": "Manual content creation"
+        "settings": "Settings",
+        "accountsManagement": "Accounts Management"
       },
       "facebook": {
         "connectPage": "Connect Facebook Page",
@@ -310,8 +292,7 @@
           "postScheduled": "Post scheduled successfully!",
           "postPublished": "Post published successfully!",
           "failedToCreate": "Failed to create post"
-        }
-        ,
+        },
         "features": {
           "title": "Facebook Integration Features",
           "subtitle": "Powerful automation tools for your Facebook pages",
