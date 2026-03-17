@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslations } from "next-intl";
-import LocaleSwitcher from "../LocaleSwitcher";
+import LocaleSwitcher from "@/components/shared/LocaleSwitcher";
 import {
   LayoutDashboard,
   Users,
