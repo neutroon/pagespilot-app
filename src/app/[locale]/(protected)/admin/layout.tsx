@@ -1,5 +1,5 @@
 "use client";
-import BaseDashboardLayout from "@/components/BaseDashboardLayout";
+import BaseDashboardLayout from "@/components/shared/BaseDashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface LocaleLayoutProps {

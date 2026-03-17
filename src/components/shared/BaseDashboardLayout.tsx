@@ -7,7 +7,7 @@ import {
   AdminSidebar,
   ManagerSidebar,
   UserSidebar,
-} from "@/components/sidebar";
+} from "@/components/shared/sidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 

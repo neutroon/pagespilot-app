@@ -3,10 +3,9 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import AdminSidebar from "@/components/sidebar/AdminSidebar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import BaseDashboardLayout from "@/components/BaseDashboardLayout";
+import BaseDashboardLayout from "@/components/shared/BaseDashboardLayout";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
