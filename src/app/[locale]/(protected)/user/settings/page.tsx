@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "../../../../../contexts/AuthContext";
-import { authService, UpdateProfileRequest } from "../../../../../services/api";
+import { UpdateProfileRequest } from "../../../../../services/api";
+import { authService } from "../../../../../services/auth-api";
 import UserProfileCard from "../../../../../components/UserProfileCard";
 import AppNavbar from "../../../../../components/AppNavbar";
 

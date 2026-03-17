@@ -8,7 +8,8 @@ import {
   ReactNode,
 } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { authService, User } from "../services/api";
+import { User } from "../services/api";
+import { authService } from "../services/auth-api";
 
 interface AuthContextType {
   user: User | null;
