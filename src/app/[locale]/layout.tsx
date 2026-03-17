@@ -7,7 +7,7 @@ import { locales } from "@/i18n/config";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { DashboardProtection } from "@/components/DashboardProtection";
+import { DashboardProtection } from "@/components/shared/DashboardProtection";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
