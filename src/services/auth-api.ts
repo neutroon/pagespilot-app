@@ -3,6 +3,8 @@ import {
   AuthResponse,
   LoginRequest,
   RegisterRequest,
+  UpdateProfileRequest,
+  UpdateProfileResponse,
   User,
 } from "@/services/api";
 
@@ -103,6 +105,34 @@ class AuthService {
         await this.refreshToken();
       }
     }, 14 * 60 * 1000); // 14 minutes
+  }
+
+  // Update user profile
+  async updateProfile(
+    data: UpdateProfileRequest,
+  ): Promise<UpdateProfileResponse> {
+    return fetchWithAuth(AUTH_API.ME, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  // Change password
+  async changePassword(
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<{ message: string }> {
+    return fetchWithAuth(`${AUTH_API.ME}/password`, {
+      method: "PUT",
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+  }
+
+  // Delete account
+  async deleteAccount(): Promise<{ message: string }> {
+    return fetchWithAuth(AUTH_API.ME, {
+      method: "DELETE",
+    });
   }
 
   // Clean up resources
