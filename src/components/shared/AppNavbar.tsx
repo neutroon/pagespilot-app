@@ -3,10 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useParams } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
 import UserMenu from "@/components/shared/UserMenu";
 import LocaleSwitcher from "@/components/shared/LocaleSwitcher";
-import { LayoutDashboard, User, Menu, X } from "lucide-react";
+import { LayoutDashboard, Menu, X, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Logo from "@/components/shared/Logo";
 
@@ -21,7 +20,6 @@ interface NavItem {
 export default function AppNavbar() {
   const pathname = usePathname();
   const params = useParams();
-  const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const t = useTranslations("HomePage.dashboard");
 
@@ -34,13 +32,11 @@ export default function AppNavbar() {
       icon: <LayoutDashboard className="w-5 h-5" />,
     },
     {
-      name: t("navigation.profile"),
-      href: "/user/profile",
-      icon: <User className="w-5 h-5" />,
+      name: t("navigation.accountsManagement"),
+      href: "/user/accounts-management",
+      icon: <Users className="w-5 h-5" />,
     },
   ];
-
-  if (!user) return null;
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-40">
@@ -75,11 +71,10 @@ export default function AppNavbar() {
                 <Link
                   key={item.name}
                   href={`/${currentLocale}${item.href}`}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                    isActive
-                      ? "bg-blue-50 text-blue-700 border border-blue-200"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                  }`}
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${isActive
+                    ? "bg-blue-50 text-blue-700 border border-blue-200"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    }`}
                 >
                   {item.icon}
                   <span>{item.name}</span>
@@ -126,11 +121,10 @@ export default function AppNavbar() {
                     key={item.name}
                     href={`/${currentLocale}${item.href}`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                      isActive
-                        ? "bg-blue-50 text-blue-700 border border-blue-200"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                    }`}
+                    className={`flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${isActive
+                      ? "bg-blue-50 text-blue-700 border border-blue-200"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      }`}
                   >
                     {item.icon}
                     <span>{item.name}</span>
