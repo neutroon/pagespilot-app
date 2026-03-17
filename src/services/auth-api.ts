@@ -25,13 +25,13 @@ class AuthService {
   }
 
   // Login user
-  async login(data: LoginRequest): Promise<User> {
+  async login(data: LoginRequest): Promise<AuthResponse> {
     const response = await fetchWithAuth(AUTH_API.LOGIN, {
       method: "POST",
       body: JSON.stringify(data),
     });
 
-    return response as User;
+    return response;
   }
 
   // Logout user
@@ -99,12 +99,15 @@ class AuthService {
     }
 
     // Refresh token every 14 minutes (before 15-minute expiry)
-    this.refreshInterval = setInterval(async () => {
-      const isAuth = await this.isAuthenticated();
-      if (isAuth) {
-        await this.refreshToken();
-      }
-    }, 14 * 60 * 1000); // 14 minutes
+    this.refreshInterval = setInterval(
+      async () => {
+        const isAuth = await this.isAuthenticated();
+        if (isAuth) {
+          await this.refreshToken();
+        }
+      },
+      14 * 60 * 1000,
+    ); // 14 minutes
   }
 
   // Update user profile
@@ -145,7 +148,7 @@ class AuthService {
 }
 export const fetchWithAuth = async (
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<any> => {
   const response = await fetch(url, {
     ...options,
@@ -168,7 +171,7 @@ export const fetchWithAuth = async (
     }
     const errorData = await response.json().catch(() => ({}));
     throw new Error(
-      errorData.message || `HTTP error! status: ${response.status}`
+      errorData.message || `HTTP error! status: ${response.status}`,
     );
   }
 
