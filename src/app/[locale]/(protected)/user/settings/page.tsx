@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "../../../../../contexts/AuthContext";
-import { UpdateProfileRequest } from "../../../../../services/api";
-import { authService } from "../../../../../services/auth-api";
-import UserProfileCard from "../../../../../components/UserProfileCard";
-import AppNavbar from "../../../../../components/AppNavbar";
+import { useAuth } from "@/contexts/AuthContext";
+import { UpdateProfileRequest } from "@/services/api";
+import { authService } from "@/services/auth-api";
+import UserProfileCard from "@/components/shared/UserProfileCard";
+import AppNavbar from "@/components/shared/AppNavbar";
 
 export default function SettingsPage() {
   const { user, updateUser } = useAuth();
@@ -93,7 +93,7 @@ export default function SettingsPage() {
     try {
       await authService.changePassword(
         passwordData.currentPassword,
-        passwordData.newPassword
+        passwordData.newPassword,
       );
       setMessage({ type: "success", text: "Password changed successfully!" });
       setPasswordData({
