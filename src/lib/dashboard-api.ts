@@ -1,5 +1,7 @@
 // Dashboard API service for fetching stats and activity data
 
+import { fetchWithAuth } from "@/services/auth-api";
+
 export interface DashboardStats {
   connectedAccounts: number;
   postsScheduled: number;
@@ -25,25 +27,25 @@ export interface DashboardData {
 }
 
 class DashboardService {
-  private async fetchWithAuth(url: string): Promise<any> {
-    const response = await fetch(url, {
-      method: "GET",
-      credentials: "include", // Include cookies for authentication
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  // private async fetchWithAuth(url: string): Promise<any> {
+  //   const response = await fetch(url, {
+  //     method: "GET",
+  //     credentials: "include", // Include cookies for authentication
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+  //   if (!response.ok) {
+  //     throw new Error(`HTTP error! status: ${response.status}`);
+  //   }
 
-    return await response.json();
-  }
+  //   return await response.json();
+  // }
 
   async getDashboardStats(): Promise<DashboardStats> {
     try {
-      const data = await this.fetchWithAuth("/v1/dashboard/stats");
+      const data = await fetchWithAuth("/v1/dashboard/stats");
       return {
         connectedAccounts: data.connectedAccounts || 0,
         postsScheduled: data.postsScheduled || 0,
@@ -62,7 +64,7 @@ class DashboardService {
 
   async getDashboardActivity(): Promise<DashboardActivity[]> {
     try {
-      const data = await this.fetchWithAuth("/v1/dashboard/activity");
+      const data = await fetchWithAuth("/v1/dashboard/activity");
       return data.activities || [];
     } catch (error) {
       console.error("Failed to fetch dashboard activity:", error);
