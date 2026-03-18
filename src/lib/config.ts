@@ -3,6 +3,11 @@ export const API_CONFIG = {
   // Backend API base URL
   BACKEND_URL: process.env.NEXT_PUBLIC_API || "http://localhost:8080",
 
+  // Onboarding API endpoints
+  ONBOARDING: {
+    ANALYZE_WEBSITE: "/v1/scrape/analyze-website",
+  },
+
   // Facebook API endpoints
   FACEBOOK: {
     LOGIN: "/v1/facebook/login",
@@ -71,6 +76,11 @@ export const API_CONFIG = {
 // Helper function to build full API URLs
 export const buildApiUrl = (endpoint: string): string => {
   return `${API_CONFIG.BACKEND_URL}${endpoint}`;
+};
+
+// Onboarding API URLs
+export const ONBOARDING_API = {
+  ANALYZE_WEBSITE: buildApiUrl(API_CONFIG.ONBOARDING.ANALYZE_WEBSITE),
 };
 
 // Facebook API URLs
