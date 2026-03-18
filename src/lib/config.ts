@@ -95,11 +95,6 @@ export const AUTH_API = {
 
 // Admin API URLs
 export const ADMIN_API = {
-  // Authentication
-  LOGIN: buildApiUrl(API_CONFIG.AUTH.LOGIN),
-  REFRESH: buildApiUrl(API_CONFIG.AUTH.REFRESH),
-  LOGOUT: buildApiUrl(API_CONFIG.AUTH.LOGOUT),
-
   // User Management
   USERS: buildApiUrl(API_CONFIG.ADMIN.USERS),
   USER_BY_ID: (id: number) =>
@@ -123,18 +118,18 @@ export const ADMIN_API = {
   ASSIGNMENTS: buildApiUrl(API_CONFIG.ADMIN.ASSIGNMENTS),
   ASSIGNMENT_DELETE: (id: number) =>
     buildApiUrl(
-      API_CONFIG.ADMIN.ASSIGNMENT_DELETE.replace(":id", id.toString())
+      API_CONFIG.ADMIN.ASSIGNMENT_DELETE.replace(":id", id.toString()),
     ),
 
   // Facebook Analytics
   FACEBOOK_ANALYTICS: buildApiUrl(API_CONFIG.ADMIN.FACEBOOK_ANALYTICS),
   USER_FACEBOOK_ACCOUNTS: (id: number) =>
     buildApiUrl(
-      API_CONFIG.ADMIN.USER_FACEBOOK_ACCOUNTS.replace(":id", id.toString())
+      API_CONFIG.ADMIN.USER_FACEBOOK_ACCOUNTS.replace(":id", id.toString()),
     ),
   DELETE_FACEBOOK_ACCOUNT: (id: number) =>
     buildApiUrl(
-      API_CONFIG.ADMIN.DELETE_FACEBOOK_ACCOUNT.replace(":id", id.toString())
+      API_CONFIG.ADMIN.DELETE_FACEBOOK_ACCOUNT.replace(":id", id.toString()),
     ),
 };
 
@@ -146,16 +141,16 @@ export const MANAGER_API = {
   MY_MANAGERS: buildApiUrl(API_CONFIG.MANAGER.MY_MANAGERS),
   USER_ANALYTICS: (id: number) =>
     buildApiUrl(
-      API_CONFIG.MANAGER.USER_ANALYTICS.replace(":id", id.toString())
+      API_CONFIG.MANAGER.USER_ANALYTICS.replace(":id", id.toString()),
     ),
   USER_BY_ID: (id: number) =>
     buildApiUrl(API_CONFIG.MANAGER.USER_BY_ID.replace(":id", id.toString())),
   USER_DEACTIVATE: (id: number) =>
     buildApiUrl(
-      API_CONFIG.MANAGER.USER_DEACTIVATE.replace(":id", id.toString())
+      API_CONFIG.MANAGER.USER_DEACTIVATE.replace(":id", id.toString()),
     ),
   USER_REACTIVATE: (id: number) =>
     buildApiUrl(
-      API_CONFIG.MANAGER.USER_REACTIVATE.replace(":id", id.toString())
+      API_CONFIG.MANAGER.USER_REACTIVATE.replace(":id", id.toString()),
     ),
 };
