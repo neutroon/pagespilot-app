@@ -74,9 +74,13 @@ class AuthService {
 
   private async _performRefresh(): Promise<boolean> {
     try {
-      const response = await fetchWithAuth(AUTH_API.REFRESH, {
-        method: "POST",
-      });
+      const response = await fetchWithAuth(
+        AUTH_API.REFRESH,
+        {
+          method: "POST",
+        },
+        true,
+      );
       return response;
     } catch (error) {
       console.error("Token refresh error:", error);
@@ -149,6 +153,7 @@ class AuthService {
 export const fetchWithAuth = async (
   url: string,
   options: RequestInit = {},
+  skipRefresh = false,
 ): Promise<any> => {
   const response = await fetch(url, {
     ...options,
@@ -160,12 +165,12 @@ export const fetchWithAuth = async (
   });
 
   if (!response.ok) {
-    if (response.status === 401) {
+    if (response.status === 401 && !skipRefresh) {
       // Try to refresh token
       const refreshed = await authService.refreshToken();
       if (refreshed) {
         // Retry the original request
-        return fetchWithAuth(url, options);
+        return fetchWithAuth(url, options, true);
       }
       throw new Error("Authentication failed");
     }
