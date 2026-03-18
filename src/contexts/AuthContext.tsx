@@ -7,9 +7,9 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { User } from "../services/api";
-import { authService } from "../services/auth-api";
+import { useRouter, usePathname } from "@/i18n/navigation";
+import { User } from "@/services/api";
+import { authService } from "@/services/auth-api";
 
 interface AuthContextType {
   user: User | null;
@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchUser = async () => {
     try {
       const res = await authService.getCurrentUser();
-      setUser(res || null);
+      setUser(res);
       localStorage.setItem(
         "facebook_access_token",
         res?.facebookAccounts[0]?.accessToken || ""
@@ -41,13 +41,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     } catch {
       setUser(null);
-    } finally {
-      setIsLoading(false);
     }
   };
   // Initial load
   useEffect(() => {
-    fetchUser();
+    fetchUser().finally(() => {
+      setIsLoading(false);
+    });
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -57,29 +57,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { user } = res;
       setUser(user);
       await fetchUser();
-      // Set role cookie as fallback (in case backend doesn't set it)
-      document.cookie = `role=${user.role}; path=/; max-age=${7 * 24 * 60 * 60
-        }; SameSite=Lax`;
-
-      // Extract locale from current pathname
-      const locale = pathname.split("/")[1] || "en";
 
       // role-based redirect with locale
       switch (user.role) {
         case "admin":
-          router.push(`/${locale}/admin/dashboard`);
+          router.push(`/admin/dashboard`);
           break;
         case "manager":
-          router.push(`/${locale}/manager/dashboard`);
+          router.push(`/manager/dashboard`);
           break;
         case "user":
-          router.push(`/${locale}/user/dashboard`);
+          router.push(`/user/dashboard`);
           break;
         case "super_admin":
-          router.push(`/${locale}/super_admin/dashboard`);
+          router.push(`/super_admin/dashboard`);
           break;
         default:
-          router.push(`/${locale}/user/dashboard`);
+          router.push(`/user/dashboard`);
           break;
       }
     } catch (err) {
@@ -98,11 +92,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch { }
     setUser(null);
 
-    // Clear role cookie
-    document.cookie = "role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-
-    // Extract locale from current pathname for redirect
-    // const locale = pathname.split("/")[1] || "en";
     router.push(`/auth/login`);
   };
 
@@ -112,10 +101,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const res = await authService.register({ name, email, password });
       const { user } = res;
       setUser(user);
-
-      // Set role cookie as fallback
-      document.cookie = `role=${user.role}; path=/; max-age=${7 * 24 * 60 * 60
-        }; SameSite=Lax`;
 
       // Extract locale from current pathname
       const locale = pathname.split("/")[1] || "en";
