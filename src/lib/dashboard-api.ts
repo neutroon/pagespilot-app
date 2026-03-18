@@ -27,22 +27,6 @@ export interface DashboardData {
 }
 
 class DashboardService {
-  // private async fetchWithAuth(url: string): Promise<any> {
-  //   const response = await fetch(url, {
-  //     method: "GET",
-  //     credentials: "include", // Include cookies for authentication
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-
-  //   if (!response.ok) {
-  //     throw new Error(`HTTP error! status: ${response.status}`);
-  //   }
-
-  //   return await response.json();
-  // }
-
   async getDashboardStats(): Promise<DashboardStats> {
     try {
       const data = await fetchWithAuth("/v1/dashboard/stats");
