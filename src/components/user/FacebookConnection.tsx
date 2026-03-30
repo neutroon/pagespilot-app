@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_CONFIG, FACEBOOK_API } from "@/lib/config";
-import { Facebook, CheckCircle, X, Loader2, ExternalLink } from "lucide-react";
+import { facebookAPI } from "@/lib/facebook-api";
+import { businessProfileService, BusinessProfile } from "@/lib/business-profile-api";
+import { Facebook, CheckCircle, X, Loader2, Link2, AlertCircle } from "lucide-react";
 import Image from "next/image";
 
 interface FacebookPage {
@@ -40,6 +42,13 @@ export default function FacebookConnection({
 
   const isRTL = locale === "ar";
 
+  // Linking state
+  const [businessProfiles, setBusinessProfiles] = useState<BusinessProfile[]>([]);
+  const [selectedProfileIds, setSelectedProfileIds] = useState<Record<string, number>>({});
+  const [linkedPageIds, setLinkedPageIds] = useState<Set<string>>(new Set());
+  const [linkingPageId, setLinkingPageId] = useState<string | null>(null);
+  const [linkError, setLinkError] = useState<{ pageId: string; msg: string } | null>(null);
+
   useEffect(() => {
     // Check if we have an OAuth callback code
     const urlParams = new URLSearchParams(window.location.search);
@@ -54,6 +63,12 @@ export default function FacebookConnection({
         fetchConnectedPages();
       }
     }
+
+    // Fetch business profiles for linking options
+    businessProfileService.getAll().then((bps) => {
+      setBusinessProfiles(bps);
+    }).catch(() => {});
+
   }, []);
 
   const handleOAuthCallback = async (code: string) => {
@@ -231,6 +246,45 @@ export default function FacebookConnection({
     }
   };
 
+  const linkToChatbot = async (pageId: string) => {
+    // Determine the profile ID: either explicitly selected or currently linked
+    const currentlyLinkedProfile = businessProfiles.find((bp) => bp.isConnectedToMeta && bp.socialId === pageId) 
+                || (linkedPageIds.has(pageId) ? businessProfiles.find((bp) => bp.id === selectedProfileIds[pageId]) : null);
+                
+    const profileId = selectedProfileIds[pageId] || currentlyLinkedProfile?.id;
+    
+    if (!profileId) {
+      setLinkError({ pageId, msg: t("dashboard.facebook.selectProfileToLink") || "Select a business profile first" });
+      return;
+    }
+
+    setLinkingPageId(pageId);
+    setLinkError(null);
+
+    try {
+      await facebookAPI.linkPageToBusiness(pageId, profileId);
+      setLinkedPageIds((prev) => new Set(prev).add(pageId));
+      setBusinessProfiles((prev) => 
+        prev.map(bp => {
+          if (bp.id === profileId) {
+            return { ...bp, isConnectedToMeta: true, socialId: pageId };
+          }
+          if (bp.socialId === pageId) {
+            return { ...bp, isConnectedToMeta: false, socialId: null };
+          }
+          return bp;
+        })
+      );
+    } catch (err) {
+      setLinkError({
+        pageId,
+        msg: err instanceof Error ? err.message : "Failed to link to chatbot",
+      });
+    } finally {
+      setLinkingPageId(null);
+    }
+  };
+
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + "M";
@@ -332,53 +386,118 @@ export default function FacebookConnection({
       ) : (
         <div className="space-y-4">
           {Array.isArray(connectedPages) && connectedPages.length > 0 ? (
-            connectedPages.map((page) => (
-              <div
-                onClick={() => onPageSelect?.(page.id, page.access_token)}
-                key={page.id}
-                className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors"
-              >
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                    {page.picture ? (
-                      <Image
-                        src={page.picture.data.url}
-                        alt={page.name}
-                        className="w-12 h-12 rounded-xl object-cover"
-                      />
-                    ) : (
-                      <Facebook className="w-6 h-6 text-blue-600" />
-                    )}
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-slate-900">{page.name}</h4>
-                    <p className="text-sm text-slate-600">
-                      {page.category} •{" "}
-                      {formatNumber(page.followers_count || 0)}{" "}
-                      {t("dashboard.facebook.followers")}
-                    </p>
-                    <p className="text-xs text-slate-500">ID: {page.id}</p>
-                  </div>
-                </div>
+            connectedPages.map((page) => {
+              const linkedProfile = businessProfiles.find((bp) => bp.isConnectedToMeta && bp.socialId === page.id) 
+                || (linkedPageIds.has(page.id) ? businessProfiles.find((bp) => bp.id === selectedProfileIds[page.id]) : null);
 
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-1">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-sm text-green-600 font-medium">
-                      {t("dashboard.facebook.active")}
-                    </span>
-                  </div>
+              const currentSelectValue = selectedProfileIds[page.id] !== undefined ? selectedProfileIds[page.id] : (linkedProfile?.id || "");
+              const isSwitchingToSame = linkedProfile && currentSelectValue === linkedProfile.id;
 
-                  {/* <button
-                    onClick={() => disconnectPage(page.id)}
-                    className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
-                    title={t("dashboard.facebook.disconnect")}
+              return (
+              <div key={page.id} className="flex flex-col gap-2">
+                <div
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200 transition-colors gap-4"
+                >
+                  <div 
+                    className="flex items-center space-x-4 cursor-pointer flex-1"
+                    onClick={() => onPageSelect?.(page.id, page.access_token)}
                   >
-                    <X className="w-4 h-4" />
-                  </button> */}
+                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                      {page.picture ? (
+                        <Image
+                          src={page.picture.data.url}
+                          alt={page.name}
+                          width={48}
+                          height={48}
+                          className="w-12 h-12 rounded-xl object-cover"
+                        />
+                      ) : (
+                        <Facebook className="w-6 h-6 text-blue-600" />
+                      )}
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-slate-900 line-clamp-1">{page.name}</h4>
+                      <p className="text-sm text-slate-600 line-clamp-1">
+                        {page.category} •{" "}
+                        {formatNumber(page.followers_count || 0)}{" "}
+                        {t("dashboard.facebook.followers")}
+                      </p>
+                      <p className="text-xs text-slate-500 font-mono mt-0.5">ID: {page.id}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-3 sm:flex-shrink-0">
+                    <div className="hidden sm:flex items-center space-x-1 me-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="text-sm text-green-600 font-medium">
+                        {t("dashboard.facebook.active")}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2">
+                        {linkedProfile && (
+                          <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 bg-green-50 text-green-700 rounded text-xs font-semibold me-2">
+                            <CheckCircle className="w-3.5 h-3.5" />
+                            Linked
+                          </div>
+                        )}
+                        <div className="flex items-center gap-2">
+                          {businessProfiles.length > 0 && (
+                            <select
+                              className="px-2 py-1.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                              value={selectedProfileIds[page.id] !== undefined ? selectedProfileIds[page.id] : (linkedProfile?.id || "")}
+                              onChange={(e) =>
+                                setSelectedProfileIds((prev) => ({
+                                  ...prev,
+                                  [page.id]: Number(e.target.value),
+                                }))
+                              }
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <option value="">Select profile...</option>
+                              {businessProfiles.map((bp) => (
+                                <option key={bp.id} value={bp.id}>
+                                  {bp.name}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              linkToChatbot(page.id);
+                            }}
+                            disabled={
+                              linkingPageId === page.id || 
+                              businessProfiles.length === 0 || 
+                              !currentSelectValue ||
+                              Boolean(isSwitchingToSame)
+                            }
+                            title={!businessProfiles.length ? "Set up your business profile first" : ""}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-indigo-600 border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                          >
+                            {linkingPageId === page.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Link2 className="w-4 h-4" />
+                            )}
+                            {linkedProfile ? "Switch" : "Link"}
+                          </button>
+                        </div>
+                      </div>
+                  </div>
                 </div>
+                
+                {/* Per-page error */}
+                {linkError?.pageId === page.id && (
+                  <div className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 bg-red-50 rounded-lg border border-red-100 animate-[fadeInUp_0.3s_ease]">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    {linkError.msg}
+                  </div>
+                )}
               </div>
-            ))
+            );
+          })
           ) : (
             <div className="text-center py-8 text-slate-500">
               <Facebook className="w-12 h-12 mx-auto mb-3 text-slate-300" />
