@@ -8,6 +8,16 @@ export const API_CONFIG = {
     ANALYZE_WEBSITE: "/v1/scrape/analyze-website",
   },
 
+  // Business Profile API endpoints
+  BUSINESS_PROFILE: {
+    BASE: "/v1/business-profile",
+  },
+
+  // RAG API endpoints
+  // RAG: {
+  //   INGEST: "/api/rag/ingest/:businessId",
+  // },
+
   // Facebook API endpoints
   FACEBOOK: {
     LOGIN: "/v1/facebook/login",
@@ -82,6 +92,17 @@ export const buildApiUrl = (endpoint: string): string => {
 export const ONBOARDING_API = {
   ANALYZE_WEBSITE: buildApiUrl(API_CONFIG.ONBOARDING.ANALYZE_WEBSITE),
 };
+
+// Business Profile API URLs
+export const BUSINESS_PROFILE_API = {
+  BASE: buildApiUrl(API_CONFIG.BUSINESS_PROFILE.BASE),
+};
+
+// RAG API URLs
+// export const RAG_API = {
+//   INGEST: (businessId: number) =>
+//     buildApiUrl(API_CONFIG.RAG.INGEST.replace(":businessId", businessId.toString())),
+// };
 
 // Facebook API URLs
 export const FACEBOOK_API = {
