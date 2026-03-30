@@ -69,11 +69,6 @@ export default function DashboardSidebar() {
       href: "/profile",
       icon: <User className="w-5 h-5" />,
     },
-    {
-      name: t("navigation.settings"),
-      href: "/settings",
-      icon: <Settings className="w-5 h-5" />,
-    },
   ];
 
   const quickActions: SidebarItem[] = [
