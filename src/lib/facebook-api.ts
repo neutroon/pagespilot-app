@@ -121,6 +121,29 @@ class FacebookAPIService {
     return await response.json();
   }
 
+  // Link Facebook Page to a Business Profile Chatbot
+  async linkPageToBusiness(
+    pageId: string,
+    businessProfileId: number,
+  ): Promise<void> {
+    const response = await fetch(
+      `${this.appUrl}/v1/facebook/pages/${pageId}/link-business`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ businessProfileId }),
+      },
+    );
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || "Failed to link page to chatbot");
+    }
+  }
+
   // Create a post on Facebook page
   async createPost(
     pageId: string,
