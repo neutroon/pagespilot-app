@@ -6,7 +6,12 @@ import {
   onboardingService,
   OnboardingResponse,
 } from "@/lib/onboarding-api";
+import {
+  businessProfileService,
+  fireRagIngest,
+} from "@/lib/business-profile-api";
 import AppNavbar from "@/components/shared/AppNavbar";
+import BusinessProfileForm, { BusinessProfileFormData } from "@/components/user/BusinessProfileForm";
 import {
   Globe,
   Sparkles,
@@ -68,120 +73,6 @@ const LOADING_MESSAGES = [
   "✨ Polishing your profile…",
 ];
 
-// ─── Tag Input Component ──────────────────────────────────────────────────────
-
-function TagInput({
-  tags,
-  onChange,
-  placeholder,
-}: {
-  tags: string[];
-  onChange: (tags: string[]) => void;
-  placeholder: string;
-}) {
-  const [input, setInput] = useState("");
-
-  const addTag = () => {
-    const val = input.trim();
-    if (val && !tags.includes(val)) {
-      onChange([...tags, val]);
-    }
-    setInput("");
-  };
-
-  const removeTag = (idx: number) => {
-    onChange(tags.filter((_, i) => i !== idx));
-  };
-
-  return (
-    <div>
-      <div className="flex flex-wrap gap-2 mb-3">
-        {tags.map((tag, idx) => (
-          <span
-            key={idx}
-            className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full text-sm font-medium group"
-          >
-            {tag}
-            <button
-              type="button"
-              onClick={() => removeTag(idx)}
-              className="ml-1 text-indigo-400 hover:text-indigo-700 transition-colors"
-              aria-label={`Remove ${tag}`}
-            >
-              <X className="w-3 h-3" />
-            </button>
-          </span>
-        ))}
-        {tags.length === 0 && (
-          <span className="text-sm text-gray-400 italic">No items yet</span>
-        )}
-      </div>
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              addTag();
-            }
-          }}
-          placeholder={placeholder}
-          className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 bg-gray-50 transition"
-        />
-        <button
-          type="button"
-          onClick={addTag}
-          className="px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium flex items-center gap-1"
-        >
-          <Plus className="w-4 h-4" />
-          Add
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ─── Section Card ─────────────────────────────────────────────────────────────
-
-function SectionCard({
-  icon,
-  title,
-  delay,
-  children,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  delay: number;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className="ob-section bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-shadow"
-      style={{ animationDelay: `${delay}ms` }}
-    >
-      <div className="flex items-center gap-3 mb-5">
-        <div className="w-9 h-9 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
-          {icon}
-        </div>
-        <h2 className="text-base font-semibold text-gray-800">{title}</h2>
-      </div>
-      <div className="space-y-4">{children}</div>
-    </div>
-  );
-}
-
-// ─── Field Label ──────────────────────────────────────────────────────────────
-
-function FieldLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <label className="block text-sm font-medium text-gray-600 mb-1.5">
-      {children}
-    </label>
-  );
-}
-
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function OnboardingPage() {
@@ -195,7 +86,13 @@ export default function OnboardingPage() {
   const [loadingMsg, setLoadingMsg] = useState(0);
   const [progress, setProgress] = useState(0);
   const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
-  const [formData, setFormData] = useState<FormData>({
+  
+  // Save State
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [ragToast, setRagToast] = useState(false);
+
+  const [formData, setFormData] = useState<BusinessProfileFormData>({
     business_name: "",
     brand_identity: "",
     target_audience: "",
@@ -297,38 +194,38 @@ export default function OnboardingPage() {
     }
   };
 
-  const handleSubmit = () => {
-    setToast({ type: "success", msg: "Profile saved! Taking you to the dashboard…" });
-    setTimeout(() => router.push(`/${locale}/user/dashboard`), 1800);
-  };
+  const handleSubmit = async () => {
+    setIsSaving(true);
+    setSaveError(null);
 
-  const updateField = (key: keyof FormData, value: unknown) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
-  };
+    try {
+      const payload = {
+        name: formData.business_name,
+        identity: formData.brand_identity,
+        targetAudience: formData.target_audience,
+        voiceAndTone: formData.voice_and_tone,
+        productsServices: formData.products_services,
+        expectedUserIntents: formData.expected_user_intents,
+        phoneNumbers: formData.phone_numbers,
+        workingHours: formData.working_hours,
+        address: formData.address,
+        corePolicies: formData.core_policies,
+        faqs: formData.faqs.map(f => ({ question: f.question, answer: f.answer })),
+      };
 
-  const toggleFaq = (idx: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      faqs: prev.faqs.map((f, i) => (i === idx ? { ...f, isOpen: !f.isOpen } : f)),
-    }));
-  };
+      const savedProfile = await businessProfileService.save(payload);
+      
+      // Fire and forget RAG ingestion
+      fireRagIngest(savedProfile.id);
+      setRagToast(true);
 
-  const editFaq = (idx: number, field: "question" | "answer", value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      faqs: prev.faqs.map((f, i) => (i === idx ? { ...f, [field]: value } : f)),
-    }));
-  };
-
-  const removeFaq = (idx: number) => {
-    setFormData((prev) => ({ ...prev, faqs: prev.faqs.filter((_, i) => i !== idx) }));
-  };
-
-  const addFaq = () => {
-    setFormData((prev) => ({
-      ...prev,
-      faqs: [...prev.faqs, { question: "", answer: "", isOpen: true, isEditing: true }],
-    }));
+      setToast({ type: "success", msg: "Profile saved! Taking you to the dashboard…" });
+      setTimeout(() => router.push(`/${locale}/user/dashboard`), 1800);
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "Failed to save profile. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // ── Render: URL Step ─────────────────────────────────────────────────────
@@ -586,243 +483,17 @@ export default function OnboardingPage() {
             </div>
           </div>
 
-          <div className="space-y-6">
-
-            {/* 1 · Business Overview */}
-            <SectionCard icon={<Briefcase className="w-5 h-5" />} title="Business Overview" delay={100}>
-              <div>
-                <FieldLabel>Business Name</FieldLabel>
-                <input
-                  type="text"
-                  className="ob-input"
-                  value={formData.business_name}
-                  onChange={(e) => updateField("business_name", e.target.value)}
-                  placeholder="Your business name"
-                />
-              </div>
-              <div>
-                <FieldLabel>Brand Identity</FieldLabel>
-                <textarea
-                  className="ob-textarea"
-                  rows={4}
-                  value={formData.brand_identity}
-                  onChange={(e) => updateField("brand_identity", e.target.value)}
-                  placeholder="Describe your brand, mission, and what makes you unique…"
-                />
-              </div>
-            </SectionCard>
-
-            {/* 2 · Audience */}
-            <SectionCard icon={<Target className="w-5 h-5" />} title="Your Audience" delay={180}>
-              <div>
-                <FieldLabel>Target Audience</FieldLabel>
-                <textarea
-                  className="ob-textarea"
-                  rows={3}
-                  value={formData.target_audience}
-                  onChange={(e) => updateField("target_audience", e.target.value)}
-                  placeholder="Who are your ideal customers? Demographics, interests, pain points…"
-                />
-              </div>
-              <div>
-                <FieldLabel>Voice &amp; Tone</FieldLabel>
-                <div className="relative">
-                  <select
-                    className="ob-select"
-                    value={formData.voice_and_tone}
-                    onChange={(e) => updateField("voice_and_tone", e.target.value)}
-                  >
-                    {["Professional", "Friendly", "Playful", "Authoritative", "Casual", "Inspirational"].map(
-                      (v) => <option key={v}>{v}</option>
-                    )}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                </div>
-              </div>
-            </SectionCard>
-
-            {/* 3 · Products & Services */}
-            <SectionCard icon={<Briefcase className="w-5 h-5" />} title="Products &amp; Services" delay={260}>
-              <TagInput
-                tags={formData.products_services}
-                onChange={(tags) => updateField("products_services", tags)}
-                placeholder="Add a product or service…"
-              />
-            </SectionCard>
-
-            {/* 4 · User Intents */}
-            <SectionCard icon={<User className="w-5 h-5" />} title="Expected User Intents" delay={340}>
-              <p className="text-xs text-gray-400 -mt-2 mb-2">
-                What goals or questions do your visitors typically have?
-              </p>
-              <TagInput
-                tags={formData.expected_user_intents}
-                onChange={(tags) => updateField("expected_user_intents", tags)}
-                placeholder="e.g. Book an appointment, Get a quote…"
-              />
-            </SectionCard>
-
-            {/* 5 · Contact & Hours */}
-            <SectionCard icon={<Phone className="w-5 h-5" />} title="Contact &amp; Hours" delay={420}>
-              <div>
-                <FieldLabel>
-                  <span className="flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5" /> Phone Numbers
-                  </span>
-                </FieldLabel>
-                <TagInput
-                  tags={formData.phone_numbers}
-                  onChange={(tags) => updateField("phone_numbers", tags)}
-                  placeholder="+1 555 000 0000"
-                />
-              </div>
-              <div>
-                <FieldLabel>
-                  <span className="flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5" /> Working Hours
-                  </span>
-                </FieldLabel>
-                <input
-                  type="text"
-                  className="ob-input"
-                  value={formData.working_hours}
-                  onChange={(e) => updateField("working_hours", e.target.value)}
-                  placeholder="e.g. Mon–Fri 9 AM – 6 PM"
-                />
-              </div>
-              <div>
-                <FieldLabel>
-                  <span className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5" /> Address
-                  </span>
-                </FieldLabel>
-                <textarea
-                  className="ob-textarea"
-                  rows={2}
-                  value={formData.address}
-                  onChange={(e) => updateField("address", e.target.value)}
-                  placeholder="Full business address"
-                />
-              </div>
-            </SectionCard>
-
-            {/* 6 · Policies */}
-            <SectionCard icon={<ShieldCheck className="w-5 h-5" />} title="Core Policies" delay={500}>
-              <textarea
-                className="ob-textarea"
-                rows={5}
-                value={formData.core_policies}
-                onChange={(e) => updateField("core_policies", e.target.value)}
-                placeholder="Return policy, privacy policy, terms of service highlights…"
-              />
-            </SectionCard>
-
-            {/* 7 · FAQs */}
-            <SectionCard icon={<HelpCircle className="w-5 h-5" />} title="FAQs" delay={580}>
-              {formData.faqs.length === 0 && (
-                <p className="text-sm text-gray-400 italic">No FAQs extracted — add them manually below.</p>
-              )}
-
-              <div className="space-y-3">
-                {formData.faqs.map((faq, idx) => (
-                  <div
-                    key={idx}
-                    className="border border-gray-200 rounded-xl overflow-hidden bg-gray-50"
-                  >
-                    {/* FAQ Header */}
-                    <div
-                      className="flex items-center gap-2 px-4 py-3 cursor-pointer hover:bg-gray-100 transition-colors"
-                      onClick={() => toggleFaq(idx)}
-                    >
-                      <MessageSquare className="w-4 h-4 text-indigo-500 flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        {faq.isEditing || faq.question === "" ? (
-                          <input
-                            type="text"
-                            className="ob-input text-sm font-medium"
-                            value={faq.question}
-                            onClick={(e) => e.stopPropagation()}
-                            onChange={(e) => editFaq(idx, "question", e.target.value)}
-                            placeholder="FAQ question…"
-                          />
-                        ) : (
-                          <p className="text-sm font-medium text-gray-800 truncate">{faq.question}</p>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setFormData((prev) => ({
-                              ...prev,
-                              faqs: prev.faqs.map((f, i) =>
-                                i === idx ? { ...f, isEditing: !f.isEditing, isOpen: true } : f
-                              ),
-                            }));
-                          }}
-                          className="text-gray-400 hover:text-indigo-600 transition-colors p-1"
-                          aria-label="Edit FAQ"
-                        >
-                          <Pencil className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(e) => { e.stopPropagation(); removeFaq(idx); }}
-                          className="text-gray-400 hover:text-red-500 transition-colors p-1"
-                          aria-label="Remove FAQ"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                        {faq.isOpen ? (
-                          <ChevronUp className="w-4 h-4 text-gray-400" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4 text-gray-400" />
-                        )}
-                      </div>
-                    </div>
-
-                    {/* FAQ Answer */}
-                    {faq.isOpen && (
-                      <div className="px-4 pb-3 border-t border-gray-200">
-                        <textarea
-                          className="ob-textarea mt-2"
-                          rows={3}
-                          value={faq.answer}
-                          onChange={(e) => editFaq(idx, "answer", e.target.value)}
-                          placeholder="Answer…"
-                        />
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              <button
-                type="button"
-                onClick={addFaq}
-                className="mt-2 flex items-center gap-2 text-sm text-indigo-600 hover:text-indigo-800 font-medium transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                Add FAQ
-              </button>
-            </SectionCard>
-
-            {/* Submit */}
-            <div className="ob-section pt-2" style={{ animationDelay: "660ms" }}>
-              <button
-                onClick={handleSubmit}
-                className="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-base rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
-              >
-                <CheckCircle className="w-5 h-5" />
-                Complete Setup
-                <ArrowRight className="w-5 h-5" />
-              </button>
-              <p className="text-center text-xs text-gray-400 mt-3">
-                You can update this information anytime from your settings
-              </p>
-            </div>
-          </div>
+          {/* Form */}
+          <BusinessProfileForm
+            formData={formData}
+            onChange={setFormData}
+            isSaving={isSaving}
+            error={saveError}
+            onSave={handleSubmit}
+            ragToast={ragToast}
+            onDismissRagToast={() => setRagToast(false)}
+            submitLabel="Complete Setup"
+          />
         </div>
       </div>
 
