@@ -8,7 +8,7 @@ import {
 } from "@/lib/onboarding-api";
 import {
   businessProfileService,
-  fireRagIngest,
+  // fireRagIngest,
 } from "@/lib/business-profile-api";
 import AppNavbar from "@/components/shared/AppNavbar";
 import BusinessProfileForm, { BusinessProfileFormData } from "@/components/user/BusinessProfileForm";
@@ -16,22 +16,7 @@ import {
   Globe,
   Sparkles,
   ArrowRight,
-  Plus,
-  X,
   CheckCircle,
-  ChevronDown,
-  ChevronUp,
-  Pencil,
-  Phone,
-  Clock,
-  MapPin,
-  User,
-  Target,
-  Briefcase,
-  MessageSquare,
-  ShieldCheck,
-  HelpCircle,
-  Loader2,
   AlertCircle,
 } from "lucide-react";
 
@@ -86,7 +71,7 @@ export default function OnboardingPage() {
   const [loadingMsg, setLoadingMsg] = useState(0);
   const [progress, setProgress] = useState(0);
   const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
-  
+
   // Save State
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -214,9 +199,9 @@ export default function OnboardingPage() {
       };
 
       const savedProfile = await businessProfileService.save(payload);
-      
+
       // Fire and forget RAG ingestion
-      fireRagIngest(savedProfile.id);
+      // fireRagIngest(savedProfile.id);
       setRagToast(true);
 
       setToast({ type: "success", msg: "Profile saved! Taking you to the dashboard…" });
@@ -295,9 +280,8 @@ export default function OnboardingPage() {
                   onKeyDown={(e) => e.key === "Enter" && handleAnalyze()}
                   placeholder="https://yourwebsite.com"
                   autoFocus
-                  className={`w-full pl-12 pr-4 py-4 bg-white/5 border ${
-                    urlError ? "border-red-500/70" : "border-white/10"
-                  } rounded-2xl text-white placeholder-slate-500 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500/60 focus:border-indigo-500/60 focus:bg-white/8 backdrop-blur transition`}
+                  className={`w-full pl-12 pr-4 py-4 bg-white/5 border ${urlError ? "border-red-500/70" : "border-white/10"
+                    } rounded-2xl text-white placeholder-slate-500 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500/60 focus:border-indigo-500/60 focus:bg-white/8 backdrop-blur transition`}
                 />
               </div>
 
@@ -500,11 +484,10 @@ export default function OnboardingPage() {
       {/* Toast */}
       {toast && (
         <div
-          className={`fixed bottom-6 right-6 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-xl text-sm font-medium z-50 transition-all animate-[fadeInUp_0.3s_ease] ${
-            toast.type === "success"
-              ? "bg-emerald-600 text-white"
-              : "bg-red-600 text-white"
-          }`}
+          className={`fixed bottom-6 right-6 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-xl text-sm font-medium z-50 transition-all animate-[fadeInUp_0.3s_ease] ${toast.type === "success"
+            ? "bg-emerald-600 text-white"
+            : "bg-red-600 text-white"
+            }`}
         >
           {toast.type === "success" ? (
             <CheckCircle className="w-5 h-5" />
